@@ -106,7 +106,8 @@ async def unwrap_message_asgi(receive, decoder=None):
                 data = buffer[_HEADER_LENGTH : _HEADER_LENGTH + length]
                 trailers, compressed = _unpack_header_flags(flags)
 
-                yield trailers, compressed, data
+                with memoryview(data) as mv:
+                    yield trailers, compressed, mv
                 buffer = buffer[_HEADER_LENGTH + length :]
             else:
                 waiting = True
